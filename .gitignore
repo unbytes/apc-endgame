@@ -1,2 +1,5 @@
 # Virtual Environment
 /env
+
+# Visual Studio Code Configuration
+/.vscode
