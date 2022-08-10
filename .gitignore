@@ -1,2 +1,5 @@
 # Virtual Environment
 /env
+
+# Python Bytecode File
+__pycache__
