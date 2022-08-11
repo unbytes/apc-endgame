@@ -4,5 +4,8 @@
 # Python Bytecode File
 __pycache__
 
+# Test Folder
+/test
+
 # Visual Studio Code
 /.vscode
