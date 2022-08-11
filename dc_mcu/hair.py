@@ -1,39 +1,41 @@
 from graphic import *
 
-MINIMUM_CHARACTERS = 50
+GRAPHIC_COLUMN = 'HAIR'
 
-# Contagem das cores dos cabelos (DC)
-dc_hair_colors = set(dc_dataframe.HAIR)
-dc_hair_color_count = dict()  # Armazenamento da contagem
+# Retorna uma lista de cores de uma coluna
+def extract_colors(dataframe, column):
+    colors = list() # Lista de cores
+    for color in dataframe[column]:
+        if color not in colors and type(color) == str:
+            colors.append(color) # Adiciona cor
+    return colors
 
-for hair_color in dc_hair_colors:  # Iterar sobre as cores de cabelo e filtrar
-    color_count = list(dc_dataframe.HAIR).count(hair_color)
-    if color_count >= MINIMUM_CHARACTERS and type(hair_color) == str:
-        dc_hair_color_count[hair_color] = color_count
+dc_colors = extract_colors(dc_dataframe, GRAPHIC_COLUMN)
+mcu_colors = extract_colors(mcu_dataframe, GRAPHIC_COLUMN)
 
-# Marvel
-mcu_hair_colors = set(mcu_dataframe.HAIR)
-mcu_hair_color_count = dict()
+# Verifica as cores em comum
+colors_in_common = list()
+for color in dc_colors:
+    if color in mcu_colors and color not in colors_in_common:
+        colors_in_common.append(color)
+for color in mcu_colors:
+    if color in dc_colors and color not in colors_in_common:
+        colors_in_common.append(color)
 
-for hair_color in mcu_hair_colors:
-    color_count = list(mcu_dataframe.HAIR).count(hair_color)
-    if color_count >= MINIMUM_CHARACTERS and type(hair_color) == str:
-        mcu_hair_color_count[hair_color] = color_count
+# Retorna a lista de contagem das cores
+def count_color_appearance(dataframe, colors, column):
+    count = list() # Lista de contagem
+    for color in colors:
+        count.append(list(dataframe[column]).count(color)) # Adiciona contagem de uma cor
+    return count
 
-# Gerenciamento de dados
-dc_hair_color_number = len(dc_hair_color_count.keys())
-mcu_hair_color_number = len(mcu_hair_color_count.keys())
-
-dc_mcu_hair_colors = list(dc_hair_color_count.keys()) + list(mcu_hair_color_count.keys())
-dc_mcu_hair_color_count = list(dc_hair_color_count.values()) + list(mcu_hair_color_count.values())
-
-# Organização de dados
-hair_color_count = {
-    'colors': dc_mcu_hair_colors,
-    'count': dc_mcu_hair_color_count,
-    'world': ['DC']*dc_hair_color_number + ['MCU']*mcu_hair_color_number
-}
-
+dc_count = count_color_appearance(dc_dataframe, colors_in_common, GRAPHIC_COLUMN)
+mcu_count = count_color_appearance(mcu_dataframe, colors_in_common, GRAPHIC_COLUMN)
+ 
 # Plotagem do gráfico
-fig = px.bar(hair_color_count, x='world', y='count', color='colors', barmode='group')
-fig.show()
+graphic_figure = go.Figure([
+    go.Bar(name='DC', x=colors_in_common, y=dc_count),
+    go.Bar(name='MCU', x=colors_in_common, y=mcu_count)
+])
+graphic_figure.update_layout(yaxis_range=[0, max(max(dc_count), max(mcu_count))])
+graphic_figure.show()
