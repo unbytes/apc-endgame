@@ -35,5 +35,5 @@ hair_color_count = {
 }
 
 # Plotagem do gráfico
-fig = px.bar(hair_color_count, x='world', y='count', color='colors', color_discrete_map='identity', barmode='group')
+fig = px.bar(hair_color_count, x='world', y='count', color='colors', barmode='group')
 fig.show()
