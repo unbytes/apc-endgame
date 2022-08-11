@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 # Caminho para os dados
 PATH_DC_DATASET = "assets\data\dc-wikia-data.csv"
