@@ -3,3 +3,6 @@
 
 # Python Bytecode File
 __pycache__
+
+# Visual Studio Code
+/.vscode
