@@ -19,7 +19,7 @@ def generate_graphic_column_based(df_column, title):
   def extract_colors(dataframe, column):
       colors = list() # Lista de cores
       for color in dataframe[column]:
-          if color not in colors and type(color) == str: # Filtra só as linhas inválidas (nan)
+          if color not in colors and type(color) == str: # Verifica se a cor já está na lista e se é válida (str)
               colors.append(color) # Adiciona cor
       return colors
 
