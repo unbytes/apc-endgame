@@ -1,5 +1,10 @@
+import sys
+sys.path.append('./')
+
+from movies_duration.graphic import mcu_movies_duration_graphic
+
 def main():
-    pass
+    mcu_movies_duration_graphic.show()
 
 if __name__ == '__main__':
     main()
