@@ -1,15 +1,7 @@
 # Chamar bibliotecas (Pandas e Plotly)
 import pandas as pd
 import plotly.graph_objects as go
-
-def get_column(dataframe, column):
-    matrix = dataframe.values.tolist() #Lista de lista, por isso e um matriz
-    #funcao do python que transforma o dataframe em lista
-    title_position = list(dataframe).index(column)
-    column_list = list()
-    for values in matrix:
-        column_list.append(values[title_position])
-    return column_list
+from utils.functions import get_column
 
 # Caminho para os dados
 PATH_MCU_BOX_OFFICE = 'assets\data\mcu_box_office.csv'
@@ -70,5 +62,4 @@ for value in new_values_duration:
     list_duration_movie.append(value) # Junção dos valores de duração
 
 # Plotagem do gráfico
-fig = go.Figure(data=[go.Pie(labels = movie_names, values = list_duration_movie)])
-fig.show()
+mcu_movies_duration_graphic = go.Figure(data=[go.Pie(labels = movie_names, values = list_duration_movie)])
