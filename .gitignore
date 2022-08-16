@@ -3,3 +3,6 @@
 
 # Visual Studio Code Configuration
 /.vscode
+
+# Python Bytecode File
+__pycache__
