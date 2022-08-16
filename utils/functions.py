@@ -1,7 +1,3 @@
-import pandas as pd
-
-mcu_movies_df = pd.read_csv('assets/data/movie_info.csv')
-
 def get_column(dataframe, column):
     matrix = dataframe.values.tolist() #Lista de lista, por isso e um matriz
     #funcao do python que transforma o dataframe em lista
