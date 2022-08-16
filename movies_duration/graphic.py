@@ -14,7 +14,7 @@ captain_duration = 0
 avengers_duration = 0
 guardian_duration = 0
 ant_duration = 0
-# Lista para gardar os valores 
+# Lista para guardar os valores 
 list_duration_movie = list()
 cont = 0
 # Lista para guardar os nomes dos filmes em um vetor
@@ -27,7 +27,7 @@ for name in mcu_dataframe.movie_title:
           iron_duration += mcu_dataframe.movie_duration[cont]
       elif name[:4] == "Thor":
           thor_duration += mcu_dataframe.movie_duration[cont]
-      elif name[:4] == "Capt":
+      elif name[:15] == "Captain America":
           captain_duration += mcu_dataframe.movie_duration[cont]
       elif name[:4] == "Aven" or name[:7] == "The Ave":
           avengers_duration += mcu_dataframe.movie_duration[cont]
@@ -40,7 +40,7 @@ for name in mcu_dataframe.movie_title:
           list_duration_movie.append(mcu_dataframe.movie_duration[cont])
 
       cont += 1 
-#vetor com os novos nomes dos conjuntos de filme e vator para os valores de duração     
+#vetor com os novos nomes dos conjuntos de filme e vetor para os valores de duração     
 new_names = ["Spider Movies", "Iron Man Movies",  "Thor Movies", "Captain America Movies", "Avengers Movies", "Guardians of the Galaxy Movies", "Ant-man Movies"]
 new_values_duration = [spider_duration, iron_duration, thor_duration, captain_duration, avengers_duration, guardian_duration, ant_duration]
 #colocar esses valores nas listas
