@@ -1,70 +1,70 @@
 import pandas as pd
 import plotly.graph_objects as go
-from utils.functions import get_column
+from utils.functions import get_column_without_nan, unique_value_list
 
-# Caminho para os dados
 PATH_DC_DATASET = "assets/data/dc-wikia-data.csv"
 PATH_MARVEL_DATASET = "assets/data/marvel-wikia-data.csv"
 
-# Leitura dos dados CSV
-dc_dataframe = pd.read_csv(PATH_DC_DATASET)
-mcu_dataframe = pd.read_csv(PATH_MARVEL_DATASET)
+dc_wikia_dataframe = pd.read_csv(PATH_DC_DATASET)
+mcu_wikia_dataframe = pd.read_csv(PATH_MARVEL_DATASET)
 
-# Definição das colunas manipuladas
-GRAPHIC_HAIR_COLUMN = 'HAIR'
-GRAPHIC_EYE_COLUMN = 'EYE'
+def create_comparative_graphic_column_based(first_df, second_df, first_name, second_name, column_title, graphic_title):
+    """Gera um gráfico comparativo entre uma coluna de dois DataFrames
 
+    Args:
+        first_df: Primeiro DataFrame a ser utilizado
+        second_df: Segundo DataFrame a ser utilizado
+        first_name: Nome do primeiro DataFrame
+        second_name: Nome do segundo DataFrame
+        column_title: Título da coluna em comum entre os DataFrames
+        graphic_title: Título do gráfico
 
-def dc_mcu_graphic_column_based(dc_dataframe, mcu_dataframe, column_title, graphic_title):
+    Return:
+        Gráfico comparativo entre a coluna dos DataFrames
     """
-    Gera um gráfico comparativo entre dois ou mais DataFrames com base em uma coluna
-    """
-    def extract_colors(dataframe):
-        """
-        Recebe um DataFrame e extrai as cores da coluna indicada na função pai
-        """
-        colors = list()  # Lista de cores
-        for color in get_column(dataframe, column_title):
-            # Verifica se a cor já está na lista e se é válida (str)
-            if color not in colors and type(color) == str:
-                colors.append(color)  # Adiciona cor
-        return colors
+    first_column = get_column_without_nan(first_df, column_title)
+    second_column = get_column_without_nan(second_df, column_title)
 
-    dc_colors = extract_colors(dc_dataframe)
-    mcu_colors = extract_colors(mcu_dataframe)
+    first_values = unique_value_list(first_column)
+    second_values = unique_value_list(second_column)
 
-    # Verifica as cores em comum e constroi um conjunto
-    colors_in_common = set()
-    for color in dc_colors:
-        if color in mcu_colors:
-            colors_in_common.add(color)
-    for color in mcu_colors:
-        if color in dc_colors:
-            colors_in_common.add(color)
-    colors_in_common = list(colors_in_common)
+    values_in_common = list()                                                     
+    for value in first_values:                                                      # Percorre uma das listas de valores
+        if value in second_values and value not in values_in_common:                # Verifica se um valor está na outra lista e não está na values_in_common
+            values_in_common.append(value)                                          # Adiciona o valor em comum
 
-    def count_color_appearance(dataframe, colors):
+    for value in second_values:
+        if value in first_values and value not in values_in_common:
+            values_in_common.append(value)
+
+    def count_values_appearance(values, column):
+        """Conta quantas vezes valores aparecem em uma coluna de DataFrame
+
+        Args:
+        values: Lista de valores únicos que vão ser contados
+        column: Coluna para contagem dos valores
+
+        Return:
+        Lista de contagem dos valores na ordem da original (values)
         """
-        Retorna a lista do número de vezes que cada cor aparece na coluna do DataFrame
-        """
-        count = list()  # Lista de contagem
-        for color in colors:
-            # Adiciona contagem de uma cor
-            count.append(get_column(dataframe, column_title).count(color))
+        count = list()
+        for value in values:
+            value_count = column.count(value)                                         # Conta quantas vezes um valor aparece na coluna
+            count.append(value_count)                                                 # Adiciona contagem de um valor
         return count
 
-    dc_count = count_color_appearance(dc_dataframe, colors_in_common)
-    mcu_count = count_color_appearance(mcu_dataframe, colors_in_common)
-
-    # Plotagem do gráfico
+    first_count = count_values_appearance(values_in_common, first_column)
+    second_count = count_values_appearance(values_in_common, second_column)
+    
     graphic_figure = go.Figure([
-        go.Bar(name='DC', x=colors_in_common, y=dc_count),
-        go.Bar(name='MCU', x=colors_in_common, y=mcu_count)
+        go.Bar(name=first_name, x=values_in_common, y=first_count, marker={'color': 'aquamarine'}),
+        go.Bar(name=second_name, x=values_in_common, y=second_count, marker={'color': 'cornflowerblue'})
     ])
-    graphic_figure.update_layout(title_text=graphic_title)
+    graphic_figure.update_layout(title_text=graphic_title, template='plotly_dark')
     return graphic_figure
 
-hair_graphic = dc_mcu_graphic_column_based(dc_dataframe, mcu_dataframe,
-                                             GRAPHIC_HAIR_COLUMN, 'Cor de cabelo: Personagens da Marvel e DC')
-eye_graphic = dc_mcu_graphic_column_based(dc_dataframe, mcu_dataframe,
-                                            GRAPHIC_EYE_COLUMN, 'Cor dos olhos: Personagens Marvel e DC')
+HAIR_COLUMN = 'HAIR'
+EYE_COLUMN = 'EYE'
+
+hair_graphic = create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', HAIR_COLUMN, 'Cor de cabelo: Personagens da Marvel e DC')
+eye_graphic = create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', EYE_COLUMN, 'Cor dos olhos: Personagens Marvel e DC')
