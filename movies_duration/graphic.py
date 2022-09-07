@@ -1,17 +1,12 @@
-# Chamar bibliotecas (Pandas e Plotly)
 import pandas as pd
-import plotly.graph_objects as go
+import plotly.express as px
 from utils.functions import get_column
 
-# Caminho para os dados
 PATH_MCU_BOX_OFFICE = 'assets\data\mcu_box_office.csv'
 
-# Leitura do arquivo
-mcu_dataframe = pd.read_csv(PATH_MCU_BOX_OFFICE)
+mcu_movie_info_dataframe = pd.read_csv(PATH_MCU_BOX_OFFICE)
 
-# variáveis dos conjuntos de filmes
-# Atribuição do valor 0 para fazer a soma posteriormente
-spider_duration = 0
+spider_duration = 0                                                             # Inicialização dos tempos de cada franquia em 0
 iron_duration = 0
 thor_duration = 0
 captain_duration = 0
@@ -19,47 +14,40 @@ avengers_duration = 0
 guardian_duration = 0
 ant_duration = 0
 
-# Listagem para guardar os valores 
-list_duration_movie = list()
-cont = 0
+only_movie_names = list()
+only_movie_duration = list()
 
-# Lista para guardar os nomes dos filmes em um vetor
-movie_names = list()
-# Chamando a função 'get_column'
-movie_duration_column = get_column(mcu_dataframe, 'movie_duration') 
-movie_title_column = get_column(mcu_dataframe,'movie_title' )
+movie_duration_column = get_column(mcu_movie_info_dataframe, 'movie_duration') 
+movie_title_column = get_column(mcu_movie_info_dataframe, 'movie_title')
 
-#Verificar nome por nome e ir juntando
-for name in movie_title_column: # Verificação de cada filme por intervalos
-      if name[:4] == 'Spid':
-          spider_duration += movie_duration_column[cont] # Exemplo de soma de cada filme 
-      elif name[:4] == 'Iron':
-          iron_duration += movie_duration_column[cont]
-      elif name[:4] == "Thor":
-          thor_duration += movie_duration_column[cont]
-      elif name[:15] == "Captain America":
-          captain_duration += movie_duration_column[cont]
-      elif name[:4] == "Aven" or name[:7] == "The Ave":
-          avengers_duration += movie_duration_column[cont]
-      elif name[:4] == "Guar":
-          guardian_duration += movie_duration_column[cont]
-      elif name[:3] == 'Ant':
-          ant_duration += movie_duration_column[cont]
+for index, movie_name in enumerate(movie_title_column):                         # Percorre os filmes para agrupa-los por franquia
+      if movie_name[:4] == 'Spid':
+          spider_duration += movie_duration_column[index]                       # Exemplo de agrupamento dos filmes da franquia (Spider-Man)
+      elif movie_name[:4] == 'Iron':
+          iron_duration += movie_duration_column[index]
+      elif movie_name[:4] == "Thor":
+          thor_duration += movie_duration_column[index]
+      elif movie_name[:15] == "Captain America":
+          captain_duration += movie_duration_column[index]
+      elif movie_name[:4] == "Aven" or movie_name[:7] == "The Ave":
+          avengers_duration += movie_duration_column[index]
+      elif movie_name[:4] == "Guar":
+          guardian_duration += movie_duration_column[index]
+      elif movie_name[:3] == 'Ant':
+          ant_duration += movie_duration_column[index]
       else:
-          movie_names.append(name) # Soma na lista que não possui mais de um filme 
-          list_duration_movie.append(mcu_dataframe.movie_duration[cont]) # Duração dos filmes que não possuem nenhum conjunto
+          only_movie_names.append(movie_name)                                   # Adiciona um filme isolado de uma franquia
+          movie_duration = movie_duration_column[index]
+          only_movie_duration.append(movie_duration)                            # Adiciona a duração do filme isolado
+    
+movies_name = ["Spider Movies", "Iron Man Movies",
+               "Thor Movies","Captain America Movies",
+               "Avengers Movies", "Guardians of the Galaxy Movies",
+               "Ant-man Movies", *only_movie_names]
+movies_duration = [spider_duration, iron_duration,
+                  thor_duration, captain_duration,
+                  avengers_duration, guardian_duration,
+                  ant_duration, *only_movie_duration]
 
-      cont += 1 
-
-#Vetor com os novos nomes dos conjuntos de filme e vetor para os valores de duração     
-new_names = ["Spider Movies", "Iron Man Movies",  "Thor Movies", "Captain America Movies", "Avengers Movies", "Guardians of the Galaxy Movies", "Ant-man Movies"]
-new_values_duration = [spider_duration, iron_duration, thor_duration, captain_duration, avengers_duration, guardian_duration, ant_duration]
-
-#colocar esses valores nas listas
-for name in new_names:
-    movie_names.append(name) # Junção dos nomes dos filmes sem conjunto com os de conjunto
-for value in new_values_duration:
-    list_duration_movie.append(value) # Junção dos valores de duração
-
-# Plotagem do gráfico
-mcu_movies_duration_graphic = go.Figure(data=[go.Pie(labels = movie_names, values = list_duration_movie)])
+mcu_movies_duration_graphic = px.pie(names=movies_name, values=movies_duration, color_discrete_sequence=px.colors.sequential.Emrld)
+mcu_movies_duration_graphic.update_layout(title_text='Representatividade de cada franquia (min)', template='plotly_dark')
