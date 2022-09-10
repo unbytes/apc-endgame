@@ -1,12 +1,12 @@
 import pandas as pd
 import plotly.express as px
-import dash
+#import dash
 
 from utils.functions import get_column
 
-from dash import Dash, dcc, html, Input, Output
+#from dash import Dash, dcc, html, Input, Output
 
-app = Dash(__name__)
+#app = Dash(__name__)
 
 PATH_MCU_BOX_OFFICE = 'assets\data\mcu_box_office.csv'
 
@@ -26,7 +26,6 @@ phase_4= 0
 
 only_movie_names = list()
 only_movie_duration = list()
-movie_phases = list()
 
 movie_duration_column = get_column(mcu_movie_info_dataframe, 'movie_duration') 
 movie_title_column = get_column(mcu_movie_info_dataframe, 'movie_title')
@@ -51,15 +50,18 @@ for index, movie_name in enumerate(movie_title_column):                         
           only_movie_names.append(movie_name)                                   # Adiciona um filme isolado de uma franquia
           movie_duration = movie_duration_column[index]
           only_movie_duration.append(movie_duration)                            # Adiciona a duração do filme isolado
-for movie_data in movie_years_column:
-    if movie_data >= 2008 and movie_data <= 2012:
-        phase_1 += movie_duration_column[movie_data]
-    elif movie_data >= 2013 and movie_data <= 2015:
-        phase_2 += movie_duration_column[movie_data]
-    elif movie_data >= 2016 and movie_data <= 2019:
-        phase_3 += movie_duration_column[movie_data]
-    elif movie_data == 2021:
-        phase_4 += movie_duration_column[movie_data]
+
+for index, movie_data in enumerate(movie_years_column):
+    movie_data1 = movie_data.split("/")
+    movie_data1 = int(movie_data1[2])
+    if movie_data1 >= 2008 and movie_data1 <= 2012:
+        phase_1 += movie_duration_column[index]
+    elif movie_data1 >= 2013 and movie_data1 <= 2015:
+        phase_2 += movie_duration_column[index]
+    elif movie_data1 >= 2016 and movie_data1 <= 2019:
+        phase_3 += movie_duration_column[index]
+    elif movie_data1 == 2021:
+        phase_4 += movie_duration_column[index]
 
 movies_name = ["Spider Movies", "Iron Man Movies",
                "Thor Movies","Captain America Movies",
@@ -69,7 +71,8 @@ movies_duration = [spider_duration, iron_duration,
                   thor_duration, captain_duration,
                   avengers_duration, guardian_duration,
                   ant_duration, *only_movie_duration]
-movies_years = [phase_1, phase_2, phase_3, phase_4] 
+movie_phases = [phase_1, phase_2, phase_3, phase_4] 
+print(movie_phases)
 
-#mcu_movies_duration_graphic = px.pie(names=movies_name, values=movies_duration, color_discrete_sequence=px.colors.sequential.Emrld)
-#mcu_movies_duration_graphic.update_layout(title_text='Representatividade de cada franquia (min)', template='plotly_dark')
+mcu_movies_duration_graphic = px.pie(names=movies_name, values=movies_duration, color_discrete_sequence=px.colors.sequential.Emrld)
+mcu_movies_duration_graphic.update_layout(title_text='Representatividade de cada franquia (min)', template='plotly_dark')
