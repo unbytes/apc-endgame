@@ -26,6 +26,8 @@ phase_4= 0
 
 only_movie_names = list()
 only_movie_duration = list()
+only_movie_phases = list()
+
 
 movie_duration_column = get_column(mcu_movie_info_dataframe, 'movie_duration') 
 movie_title_column = get_column(mcu_movie_info_dataframe, 'movie_title')
@@ -71,8 +73,11 @@ movies_duration = [spider_duration, iron_duration,
                   thor_duration, captain_duration,
                   avengers_duration, guardian_duration,
                   ant_duration, *only_movie_duration]
+phases_order = ["Fase 1", "Fase 2", "Fase 3", "Fase 4"]
 movie_phases = [phase_1, phase_2, phase_3, phase_4] 
-print(movie_phases)
+
 
 mcu_movies_duration_graphic = px.pie(names=movies_name, values=movies_duration, color_discrete_sequence=px.colors.sequential.Emrld)
 mcu_movies_duration_graphic.update_layout(title_text='Representatividade de cada franquia (min)', template='plotly_dark')
+mcu_phase_duration_graphic = px.pie(names=phases_order, values= movie_phases, color_discrete_sequence=px.colors.sequential.Emrld)
+mcu_phase_duration_graphic.update_layout(title_text='Representatividade de cada fase (min)', template='plotly_dark')
