@@ -34,7 +34,7 @@ def get_column(dataframe, column_title):
 
 app = Dash(__name__)
 
-PATH_MCU_BOX_OFFICE = 'assets\data\mcu_box_office.csv'
+PATH_MCU_BOX_OFFICE = '/home/bibia/apc-endgame/assets/data/mcu_box_office.csv'
 
 mcu_movie_info_dataframe = pd.read_csv(PATH_MCU_BOX_OFFICE)
 
@@ -101,25 +101,40 @@ movies_duration = [spider_duration, iron_duration,
                   ant_duration, *only_movie_duration]
 phases_order = ["Fase 1", "Fase 2", "Fase 3", "Fase 4"]
 movie_phases = [phase_1, phase_2, phase_3, phase_4] 
-
-
+#Gráficos
+mcu_movies = px.pie(names=movie_title_column, values=movie_duration_column, color_discrete_sequence=px.colors.sequential.Emrld)
+mcu_movies.update_layout(title_text='Representatividade dos filmes (min)', template='plotly_dark')
 mcu_movies_duration_graphic = px.pie(names=movies_name, values=movies_duration, color_discrete_sequence=px.colors.sequential.Emrld)
 mcu_movies_duration_graphic.update_layout(title_text='Representatividade de cada franquia (min)', template='plotly_dark')
-#mcu_phase_duration_graphic = px.pie(names=phases_order, values= movie_phases, color_discrete_sequence=px.colors.sequential.Emrld)
-#mcu_phase_duration_graphic.update_layout(title_text='Representatividade de cada fase (min)', template='plotly_dark')
+mcu_phase_duration_graphic = px.pie(names=phases_order, values= movie_phases, color_discrete_sequence=px.colors.sequential.Emrld)
+mcu_phase_duration_graphic.update_layout(title_text='Representatividade de cada fase (min)', template='plotly_dark')
 
-
+#Fazendo aparecer o gráfico
 app.layout = html.Div(children=[
-    html.H1(children='Franquia da Marvel por min'),
+    html.H1(children='Duração dos filmes da Marvel'),
 
-    dcc.Dropdown(['Por fases', 'Franquia'], value = 'Por franquia', id='lista de interacao'),
-    html.Div(id='franquia_marvel'),
+    dcc.Dropdown(['Filmes','Por fases', 'Por Franquia'], value = 'valor', id='lista de interacao'),
 
     dcc.Graph(
         id = "grafico",
-        figure = mcu_movies_duration_graphic
+        figure = mcu_movies
     )
 ])
+#decorator
+@app.callback(
+    Output('grafico', 'figure'),
+    Input('lista de interacao', 'value')
+)
+#qual gráfico irá aparecer
+def updete_output(value):
+    if value == 'Por fases':
+        fig = mcu_phase_duration_graphic 
+    elif value == 'Por Franquia':
+        fig = mcu_movies_duration_graphic
+    elif value == 'Filmes':
+        fig = mcu_movies
+
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)
