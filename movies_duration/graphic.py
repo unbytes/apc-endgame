@@ -1,12 +1,38 @@
 import pandas as pd
 import plotly.express as px
-#import dash
 
-from utils.functions import get_column
 
-#from dash import Dash, dcc, html, Input, Output
+from dash import Dash, dcc, html, Input, Output
+def get_rows(dataframe):
+  """Extrai todas as linhas do DataFrame
 
-#app = Dash(__name__)
+  Args:
+    dataframe: DataFrame que será utilizado
+
+  Return:
+    Matriz com as linhas do DataFrame, lista que contém listas
+  """
+  matrix = dataframe.values.tolist()                                            # Transforma o DataFrame em uma matriz, ou seja, uma lista de listas
+  return matrix
+def get_column(dataframe, column_title):
+  """Extrai somente uma coluna do DataFrame
+
+  Args:
+    dataframe: DataFrame que será retirada a coluna
+    column_title: Título da coluna que será retirada
+
+  Return:
+    Coluna que foi retirada do DataFrame
+  """
+  matrix = get_rows(dataframe)
+  title_position = list(dataframe).index(column_title)                          # Identifica a posição (index) do Título da coluna nas listas
+  column_list = list()                            
+  for values in matrix:                                                         
+    value = values[title_position]                                              # Pega o valor da lista na posição da coluna
+    column_list.append(value)                                                   # Adiciona o valor na lista column_list
+  return column_list
+
+app = Dash(__name__)
 
 PATH_MCU_BOX_OFFICE = 'assets\data\mcu_box_office.csv'
 
@@ -79,5 +105,21 @@ movie_phases = [phase_1, phase_2, phase_3, phase_4]
 
 mcu_movies_duration_graphic = px.pie(names=movies_name, values=movies_duration, color_discrete_sequence=px.colors.sequential.Emrld)
 mcu_movies_duration_graphic.update_layout(title_text='Representatividade de cada franquia (min)', template='plotly_dark')
-mcu_phase_duration_graphic = px.pie(names=phases_order, values= movie_phases, color_discrete_sequence=px.colors.sequential.Emrld)
-mcu_phase_duration_graphic.update_layout(title_text='Representatividade de cada fase (min)', template='plotly_dark')
+#mcu_phase_duration_graphic = px.pie(names=phases_order, values= movie_phases, color_discrete_sequence=px.colors.sequential.Emrld)
+#mcu_phase_duration_graphic.update_layout(title_text='Representatividade de cada fase (min)', template='plotly_dark')
+
+
+app.layout = html.Div(children=[
+    html.H1(children='Franquia da Marvel por min'),
+
+    dcc.Dropdown(['Por fases', 'Franquia'], value = 'Por franquia', id='lista de interacao'),
+    html.Div(id='franquia_marvel'),
+
+    dcc.Graph(
+        id = "grafico",
+        figure = mcu_movies_duration_graphic
+    )
+])
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
