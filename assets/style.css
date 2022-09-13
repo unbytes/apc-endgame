@@ -1,0 +1,44 @@
+:root {
+    --base-black: #111111;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+
+    color: #f6f6f6;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--base-black);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main > .graphic_container {
+    text-align: center;
+}
+
+h1 {
+    margin: 2rem 0;
+}
+
+.row-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+input {
+    color: var(--base-black);
+}
+
+.dash-graph {
+    width: 90vw;
+}
