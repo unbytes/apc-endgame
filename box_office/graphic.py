@@ -39,6 +39,6 @@ for movie in range(movies_number):
     total_box_office.append(asia_pacific[movie] + europe[movie] + middle_east_and_africa[movie] + north_america[movie] + south_america[movie])
 
 # Criação do gráfico
-box_office_graphic = px.bar(x=asia_pacific_box_office.movie_title , y = total_box_office , title = 'Bilheteria dos filmes do MCU' , labels = {'x': 'Filmes do MCU' , 'y' : 'Bilheteria em bilhão'})
+box_office_graphic = px.bar(x=asia_pacific_box_office.movie_title , y = total_box_office, labels = {'x': 'Filmes do MCU' , 'y' : 'Bilheteria em milhão'})
 box_office_graphic.update_traces(marker_color='#B11313', marker_opacity=0.9)
 box_office_graphic.update_layout(xaxis_range=[0,27], template= 'plotly_dark')
