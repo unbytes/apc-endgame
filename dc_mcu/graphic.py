@@ -59,13 +59,30 @@ def create_comparative_graphic_column_based(first_df, second_df, first_name, sec
     first_count = count_values_appearance(values_in_common, first_column)
     second_count = count_values_appearance(values_in_common, second_column)
 
+    def filter_last_word(color_text):
+        """Retira a úlitma palavra, identificação de hair ou eye, do texto recebido
+
+        Args:
+          color_text: Texto bruto da cor de cabelo ou olhos
+
+        Return:
+          Texto filtrado sem a última palavra de identificação desnecessária
+        """
+        splitted = color_text.split(' ')
+        color_name = splitted[:-1]
+
+        color_text = ' '.join(color_name)
+        return color_text
+
+    values_in_common = list(map(filter_last_word, values_in_common))
+
     graphic_figure = go.Figure([
         go.Bar(name=first_name, x=values_in_common,
                y=first_count, marker={'color': '#4C9B82'}),
         go.Bar(name=second_name, x=values_in_common,
                y=second_count, marker={'color': '#0F8BAE'})
     ])
-    graphic_figure.update_layout(template='plotly_dark')
+    graphic_figure.update_layout(template='plotly_dark', font={'size': 16})
     return graphic_figure
 
 

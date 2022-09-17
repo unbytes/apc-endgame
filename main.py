@@ -6,41 +6,35 @@ sys.path.append('./')
 app = Dash(__name__)
 
 app.layout = html.Main(children=[
-    html.H1(children='Personagens Marvel e DC'),
-    html.Div(className="graphic_container", children=[
-        html.H2(children='Cor do cabelo'),
-        html.Div(className="row-container", children=[
-            html.Div([
-                "Ano inicial: ",
-                dcc.Input(className="year_input",
-                          value="1935", type='number', min=1935, max=2013, step=1)]),
-            html.Div([
-                "Ano final: ",
-                dcc.Input(className="year_input",
-                          value="2013", type='number', min=1935, max=2013, step=1)])
+    html.Section(id='characters-characteristics', className='column-container', children=[
+        html.H1('Características dos personagens (Marvel e DC)'),
+        html.Div(className='column-container', children=[
+            html.H2('Cor do cabelo'),
+            html.Div(className='row-container', children=[
+                html.Label('Escolha o intervalo (Anos):'),
+                dcc.RangeSlider(min=1935, max=2013, marks=None, step=1, value=[1935, 2013],
+                                id='hair-year', className='year-slider',
+                                tooltip={"placement": "bottom", "always_visible": True})
+            ]),
+            dcc.Graph(
+                id='hair-graph',
+                figure=hair_graphic
+            )
         ]),
-        dcc.Graph(
-            id='hair_graph',
-            figure=hair_graphic
-        )
+        html.Div(className='column-container', children=[
+            html.H1('Cor dos olhos'),
+            html.Div(className='row-container', children=[
+                html.Label('Escolha o intervalo (Anos):'),
+                dcc.RangeSlider(min=1935, max=2013, marks=None, step=1, value=[1935, 2013],
+                                id='eye-year', className='year-slider',
+                                tooltip={"placement": "bottom", "always_visible": True})
+            ]),
+            dcc.Graph(
+                id='eye-graph',
+                figure=eye_graphic
+            )
+        ])
     ]),
-    html.Div(className="graphic_container", children=[
-        html.H2(children='Cor dos olhos'),
-        html.Div(className="row-container", children=[
-            html.Div([
-                "Ano inicial: ",
-                dcc.Input(className="year_input",
-                          value="1935", type='number', min=1935, max=2013, step=1)]),
-            html.Div([
-                "Ano final: ",
-                dcc.Input(className="year_input",
-                          value="2013", type='number', min=1935, max=2013, step=1)])
-        ]),
-        dcc.Graph(
-            id='eye_graph',
-            figure=eye_graphic
-        )
-    ])
 ])
 
 if __name__ == '__main__':
