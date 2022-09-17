@@ -1,5 +1,11 @@
 # Virtual Environment
 /env
 
+# Python Bytecode File
+__pycache__
+
+# Test Folder
+/test
+
 # Visual Studio Code Configuration
 /.vscode
