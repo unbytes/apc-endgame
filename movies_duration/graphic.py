@@ -2,7 +2,7 @@ import pandas as pd
 
 from utils.functions import get_column
 
-PATH_MCU_BOX_OFFICE = '/home/bibia/apc-endgame/assets/data/mcu_box_office.csv'
+PATH_MCU_BOX_OFFICE = 'assets\data\mcu_box_office.csv'
 
 mcu_movie_info_dataframe = pd.read_csv(PATH_MCU_BOX_OFFICE)
 
