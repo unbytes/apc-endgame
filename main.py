@@ -3,7 +3,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from mcu_comics.graphic import count90, label90, count10, label10, count20, label20, rating_counts, rating_labels
+
+from movies_duration.graphic import movie_title_column, movie_duration_column, movies_duration, movies_name, phases_order, movie_phases
+
 from dc_mcu.graphic import dc_wikia_dataframe, mcu_wikia_dataframe
+
 from phases_budget.graphic import count_phase_one, count_phase_two, count_phase_three, count_phase_four
 from phases_budget.graphic import phase_one_movies, phase_two_movies, phase_three_movies, phase_four_movies
 from phases_budget.graphic import phase_one, phase_two, phase_three, phase_four
@@ -45,16 +49,17 @@ app.layout = html.Main(children=[
     ]), 
     html.Section(className='column-container', children=[
         html.H1(children ='Fases do MCU'),
-        html.H2(children = 'Gráficos com os custos da Marvel por fase.'),
+        html.H2(children = 'Custos da Marvel por fase.'),
         html.Div(className='row-container', children=[
             html.Label(children='Escolha a fase da Marvel:'),
-            dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'], 'Todas as Fases', id='fases-ucm'),
+            dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'],
+                         'Todas as Fases', id='fases-ucm'),
         ]),
         dcc.Graph(
             id ='movies-budget-graph'
         )
     ]),
-    html.Section(id="comics-rating", className='column-container', children=[
+    html.Section(className='column-container', children=[
         html.H1(children='Classificação Etária das HQs'),
         html.Div(className='row-container',  children=[
             html.Label(children='Escolha o período desejado:'),
@@ -63,6 +68,17 @@ app.layout = html.Main(children=[
         ]),
         dcc.Graph(
             id='comics-rating-graph'
+        )
+    ]),
+    html.Section(className='column-container', children=[
+        html.H1(children='Duração dos filmes da Marvel'),
+        html.Div(className='row-container', children=[
+            html.Label('Escolha o filtro de representatividade:'),
+            dcc.Dropdown(['Filmes', 'Por fases', 'Por Franquia'],
+                         'Por Franquia ', id='movies-duration-dropdown'),
+        ]),
+        dcc.Graph(
+            id="movies-duration-graph"
         )
     ])
 ])
@@ -186,6 +202,28 @@ def update_hq_rating_graphic(value):
 
     graphic.update_layout(title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
     return graphic
+
+@app.callback(
+    Output('movies-duration-graph', 'figure'),
+    Input('movies-duration-dropdown', 'value')
+)
+def update_movies_duration_graphic(value):        
+    if value == 'Por fases':
+        graphic_figure = px.pie(names=phases_order, values=movie_phases,
+                                color_discrete_sequence=px.colors.sequential.Emrld)
+        title = 'Representatividade de cada fase (min)'
+    elif value == 'Filmes':
+        graphic_figure = px.pie(names=movie_title_column, values=movie_duration_column,
+                                color_discrete_sequence=px.colors.sequential.Emrld)
+        title = 'Representatividade dos filmes (min)'
+    else:
+        graphic_figure = px.pie(names=movies_name, values=movies_duration,
+                                color_discrete_sequence=px.colors.sequential.Emrld)
+        title = 'Representatividade de cada franquia (min)'
+
+    graphic_figure.update_layout(title_text=title, template='plotly_dark')
+
+    return graphic_figure
 
 if __name__ == '__main__':
     app.run_server(debug=True)
