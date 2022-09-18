@@ -52,6 +52,7 @@ app.layout = html.Main(children=[
         ]),
         dcc.Graph(
             id ='grafico_interação'
+        )
     ]),
     html.Section(id="comics-rating", className='column-container', children=[
         html.H1(children='Classificação Etária das HQs'),
