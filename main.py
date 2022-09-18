@@ -2,6 +2,8 @@ from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 
+from box_office.graphic import box_office_graphic, asia_pacific, europe, middle_east_and_africa, north_america, south_america, asia_pacific_box_office
+
 from mcu_comics.graphic import count90, label90, count10, label10, count20, label20, rating_counts, rating_labels
 
 from movies_duration.graphic import movie_title_column, movie_duration_column, movies_duration, movies_name, phases_order, movie_phases
@@ -20,7 +22,7 @@ sys.path.append('./')
 app = Dash(__name__)
 
 app.layout = html.Main(children=[
-    html.Section(id='characters-characteristics', className='column-container', children=[
+    html.Section(className='column-container', children=[
         html.H1('Características dos personagens (Marvel e DC)'),
         html.Div(className='column-container', children=[
             html.H2('Cor do cabelo'),
@@ -35,7 +37,7 @@ app.layout = html.Main(children=[
             )
         ]),
         html.Div(className='column-container', children=[
-            html.H1('Cor dos olhos'),
+            html.H2('Cor dos olhos'),
             html.Div(className='row-container', children=[
                 html.Label('Escolha o intervalo (Anos):'),
                 dcc.RangeSlider(min=1935, max=2013, marks=None, step=1, value=[1935, 2013],
@@ -46,17 +48,17 @@ app.layout = html.Main(children=[
                 id='EYE-graph'
             )
         ])
-    ]), 
+    ]),
     html.Section(className='column-container', children=[
-        html.H1(children ='Fases do MCU'),
-        html.H2(children = 'Custos da Marvel por fase.'),
+        html.H1(children='Fases do MCU'),
+        html.H2(children='Custos da Marvel por fase.'),
         html.Div(className='row-container', children=[
             html.Label(children='Escolha a fase da Marvel:'),
             dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'],
                          'Todas as Fases', id='fases-ucm'),
         ]),
         dcc.Graph(
-            id ='movies-budget-graph'
+            id='movies-budget-graph'
         )
     ]),
     html.Section(className='column-container', children=[
@@ -79,6 +81,15 @@ app.layout = html.Main(children=[
         ]),
         dcc.Graph(
             id="movies-duration-graph"
+        )
+    ]),
+    html.Section(className='column-container', children=[
+        html.H1(children='Bilheteria dos filmes do MCU'),
+        html.H2(children='Esse gráfico indica a bilheteria de cada filme do MCU'),
+        dcc.Dropdown(['Ásia Pacífica', 'Europa', 'Oriente Médio e África', 'América do Norte', 'América do Sul', 'Todas as regiões do planeta'],
+                     value='Todas as regiões do planeta', id='box-office-dropdown'),
+        dcc.Graph(
+            id='box-office-graphic',
         )
     ])
 ])
@@ -153,8 +164,10 @@ def create_comparative_graphic_column_based(first_df, second_df, first_name, sec
 HAIR_COLUMN_TITLE = 'HAIR'
 EYE_COLUMN_TITLE = 'EYE'
 
-create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', HAIR_COLUMN_TITLE)
-create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', EYE_COLUMN_TITLE)
+create_comparative_graphic_column_based(
+    dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', HAIR_COLUMN_TITLE)
+create_comparative_graphic_column_based(
+    dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', EYE_COLUMN_TITLE)
 
 
 @app.callback(
@@ -163,16 +176,20 @@ create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe,
 )
 def update_phases_graphic(value):
     if value == "Todas as Fases":
-        fig = px.bar(x=["Fase 1", "Fase 2", "Fase 3", "Fase 4"], y=[count_phase_one, count_phase_two, 
-        count_phase_three, count_phase_four], labels={'x': 'Fases do UCM', 'y': 'Custo em Bilhão'})
+        fig = px.bar(x=["Fase 1", "Fase 2", "Fase 3", "Fase 4"], y=[count_phase_one, count_phase_two,
+                                                                    count_phase_three, count_phase_four], labels={'x': 'Fases do UCM', 'y': 'Custo em Bilhão'})
     elif value == "Fase 1":
-         fig = px.bar(x = phase_one_movies, y = phase_one, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+        fig = px.bar(x=phase_one_movies, y=phase_one, labels={
+                     'x': 'Filmes', 'y': 'Custo em Milhão'})
     elif value == "Fase 2":
-         fig = px.bar(x = phase_two_movies, y = phase_two, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+        fig = px.bar(x=phase_two_movies, y=phase_two, labels={
+                     'x': 'Filmes', 'y': 'Custo em Milhão'})
     elif value == "Fase 3":
-         fig = px.bar(x = phase_three_movies, y = phase_three, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+        fig = px.bar(x=phase_three_movies, y=phase_three, labels={
+                     'x': 'Filmes', 'y': 'Custo em Milhão'})
     elif value == "Fase 4":
-         fig = px.bar(x = phase_four_movies, y = phase_four, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+        fig = px.bar(x=phase_four_movies, y=phase_four, labels={
+                     'x': 'Filmes', 'y': 'Custo em Milhão'})
     fig.update_traces(marker_color='#a408c7')
     fig.update_layout(template='plotly_dark')
     return fig
@@ -200,14 +217,16 @@ def update_hq_rating_graphic(value):
                          color_discrete_sequence=px.colors.sequential.Emrld)
         ano = ''
 
-    graphic.update_layout(title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
+    graphic.update_layout(
+        title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
     return graphic
+
 
 @app.callback(
     Output('movies-duration-graph', 'figure'),
     Input('movies-duration-dropdown', 'value')
 )
-def update_movies_duration_graphic(value):        
+def update_movies_duration_graphic(value):
     if value == 'Por fases':
         graphic_figure = px.pie(names=phases_order, values=movie_phases,
                                 color_discrete_sequence=px.colors.sequential.Emrld)
@@ -224,6 +243,34 @@ def update_movies_duration_graphic(value):
     graphic_figure.update_layout(title_text=title, template='plotly_dark')
 
     return graphic_figure
+
+
+@app.callback(
+    Output('box-office-graphic', 'figure'),
+    Input('box-office-dropdown', 'value')
+)
+def update_box_office_graphic(value):
+    if value == 'Todas as regiões do planeta':
+        fig = box_office_graphic
+    elif value == 'Ásia Pacífica':
+        fig = px.bar(x=asia_pacific_box_office.movie_title, y=asia_pacific, labels={
+                     'x': 'Filmes do MCU', 'y': 'Bilheteria em milhão'})
+    elif value == 'Europa':
+        fig = px.bar(x=asia_pacific_box_office.movie_title, y=europe, labels={
+                     'x': 'Filmes do MCU', 'y': 'Bilheteria em milhão'})
+    elif value == 'Oriente Médio e África':
+        fig = px.bar(x=asia_pacific_box_office.movie_title, y=middle_east_and_africa, labels={
+                     'x': 'Filmes do MCU', 'y': 'Bilheteria em milhão'})
+    elif value == 'América do Norte':
+        fig = px.bar(x=asia_pacific_box_office.movie_title, y=north_america, labels={
+                     'x': 'Filmes do MCU', 'y': 'Bilheteria em milhão'})
+    elif value == 'América do Sul':
+        fig = px.bar(x=asia_pacific_box_office.movie_title, y=south_america, labels={
+                     'x': 'Filmes do MCU', 'y': 'Bilheteria em milhão'})
+    fig.update_traces(marker_color='#B11313', marker_opacity=0.9)
+    fig.update_layout(template='plotly_dark')
+    return fig
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)

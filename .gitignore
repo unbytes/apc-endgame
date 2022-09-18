@@ -6,9 +6,7 @@ __pycache__
 
 # Test Folder
 /test
+/tests
 
 # Visual Studio Code Configuration
 /.vscode
-
-# Python Bytecode File
-__pycache__
