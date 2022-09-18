@@ -18,7 +18,7 @@ body {
     background-color: var(--background-black);
 
     color: var(--font-white-color);
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 main {
@@ -56,7 +56,7 @@ label {
     justify-content: space-evenly;
 }
 
-.dash-graph, .year-slider {
+.dash-graph {
     width: inherit;
 }
 
@@ -67,5 +67,5 @@ label {
 .dash-dropdown {
     width: 50%;
 
-    color: var(--font-black-color)
+    color: var(--font-black-color);
 }

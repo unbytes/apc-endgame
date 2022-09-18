@@ -1,13 +1,14 @@
+from dash import Dash, html, dcc, Input, Output
+import plotly.express as px
+import plotly.graph_objects as go
+
+from mcu_comics.graphic import count90, label90, count10, label10, count20, label20, rating_counts, rating_labels
 from dc_mcu.graphic import dc_wikia_dataframe, mcu_wikia_dataframe
 from phases_budget.graphic import count_phase_one, count_phase_two, count_phase_three, count_phase_four
 from phases_budget.graphic import phase_one_movies, phase_two_movies, phase_three_movies, phase_four_movies
 from phases_budget.graphic import phase_one, phase_two, phase_three, phase_four
 
 from utils.functions import get_column, unique_value_list
-
-from dash import Dash, html, dcc, Input, Output
-import plotly.graph_objects as go
-import plotly.express as px
 
 import sys
 sys.path.append('./')
@@ -50,7 +51,17 @@ app.layout = html.Main(children=[
             dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'], 'Todas as Fases', id='fases_ucm'),
         ]),
         dcc.Graph(
-            id ='grafico_interação',
+            id ='grafico_interação'
+    ]),
+    html.Section(id="comics-rating", className='column-container', children=[
+        html.H1(children='Classificação Etária das HQs'),
+        html.Div(className='row-container',  children=[
+            html.Label(children='Escolha o período desejado:'),
+            dcc.Dropdown(['Todos os Anos', 'Anos 90', 'Anos 2000', 'Anos 2010'],
+                         'Todos os Anos', id='classificacao-etaria'),
+        ]),
+        dcc.Graph(
+            id='comics-rating-graph'
         )
     ])
 ])
@@ -158,9 +169,31 @@ def graphic_movies(value):
          fig.update_layout(template='plotly_dark')
     return fig
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
 
+@app.callback(
+    Output('comics-rating-graph', 'figure'),
+    Input('classificacao-etaria', 'value')
+)
+def update_hq_rating_graphic(value):
+    if value == "Anos 90":
+        graphic = px.pie(values=count90, names=label90,
+                         color_discrete_sequence=px.colors.sequential.Emrld)
+        ano = 'nos anos 90'
+    elif value == "Anos 2000":
+        graphic = px.pie(values=count10, names=label10,
+                         color_discrete_sequence=px.colors.sequential.Emrld)
+        ano = 'nos anos 2000'
+    elif value == "Anos 2010":
+        graphic = px.pie(values=count20, names=label20,
+                         color_discrete_sequence=px.colors.sequential.Emrld)
+        ano = 'nos anos 2010'
+    else:
+        graphic = px.pie(values=rating_counts, names=rating_labels,
+                         color_discrete_sequence=px.colors.sequential.Emrld)
+        ano = ''
+
+    graphic.update_layout(title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
+    return graphic
 
 if __name__ == '__main__':
     app.run_server(debug=True)
