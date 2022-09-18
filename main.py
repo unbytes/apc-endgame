@@ -145,7 +145,7 @@ create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe,
     Output('movies-budget-graph', 'figure'),
     Input('fases-ucm', 'value')
 )
-def graphic_movies(value):
+def update_phases_graphic(value):
     if value == "Todas as Fases":
         fig = px.bar(x=["Fase 1", "Fase 2", "Fase 3", "Fase 4"], y=[count_phase_one, count_phase_two, 
         count_phase_three, count_phase_four], labels={'x': 'Fases do UCM', 'y': 'Custo em Bilhão'})
