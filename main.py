@@ -70,7 +70,7 @@ def create_comparative_graphic_column_based(first_df, second_df, first_name, sec
     values_second_column = get_column(second_df, column_title)
 
     years_first_column = get_column(first_df, YEAR_COLUMN_TITLE)
-    years_second_column = get_column(second_df, 'Year')
+    years_second_column = get_column(second_df, YEAR_COLUMN_TITLE)
 
     first_values = unique_value_list(values_first_column)
     second_values = unique_value_list(values_second_column)
