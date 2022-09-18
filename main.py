@@ -4,6 +4,9 @@ import plotly.graph_objects as go
 
 from mcu_comics.graphic import count90, label90, count10, label10, count20, label20, rating_counts, rating_labels
 from dc_mcu.graphic import dc_wikia_dataframe, mcu_wikia_dataframe
+from phases_budget.graphic import count_phase_one, count_phase_two, count_phase_three, count_phase_four
+from phases_budget.graphic import phase_one_movies, phase_two_movies, phase_three_movies, phase_four_movies
+from phases_budget.graphic import phase_one, phase_two, phase_three, phase_four
 
 from utils.functions import get_column, unique_value_list
 
@@ -39,6 +42,16 @@ app.layout = html.Main(children=[
                 id='EYE-graph'
             )
         ])
+    ]), 
+    html.Section(className='column-container', children=[
+        html.H1(children ='Fases do UCM'),
+        html.H2(children = 'Gráficos com os custos de cada filme, em sua respectiva fase.'),
+        html.Div(className='row-container', children=[
+            html.Label(children='Escolha a fase da Marvel:'),
+            dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'], 'Todas as Fases', id='fases_ucm'),
+        ]),
+        dcc.Graph(
+            id ='grafico_interação'
     ]),
     html.Section(id="comics-rating", className='column-container', children=[
         html.H1(children='Classificação Etária das HQs'),
@@ -128,6 +141,36 @@ create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe,
 
 
 @app.callback(
+    Output('grafico_interação', 'figure'),
+    Input('fases_ucm', 'value')
+)
+def graphic_movies(value):
+    if value == "Todas as Fases":
+        fig = px.bar(x=["Fase 1", "Fase 2", "Fase 3", "Fase 4"], y=[count_phase_one, count_phase_two, 
+        count_phase_three, count_phase_four],
+        title=('Custos do UCM por Fases'), labels={'x': 'Fases do UCM', 'y': 'Custo em Bilhão'})
+        fig.update_traces(marker_color='#a408c7')
+        fig.update_layout(template='plotly_dark')
+    elif value == "Fase 1":
+         fig = px.bar(x = phase_one_movies, y = phase_one, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+         fig.update_traces(marker_color='#a408c7')
+         fig.update_layout(template='plotly_dark')
+    elif value == "Fase 2":
+         fig = px.bar(x = phase_two_movies, y = phase_two, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+         fig.update_traces(marker_color='#a408c7')
+         fig.update_layout(template='plotly_dark')
+    elif value == "Fase 3":
+         fig = px.bar(x = phase_three_movies, y = phase_three, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+         fig.update_traces(marker_color='#a408c7')
+         fig.update_layout(template='plotly_dark')
+    elif value == "Fase 4":
+         fig = px.bar(x = phase_four_movies, y = phase_four, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
+         fig.update_traces(marker_color='#a408c7')
+         fig.update_layout(template='plotly_dark')
+    return fig
+
+
+@app.callback(
     Output('comics-rating-graph', 'figure'),
     Input('classificacao-etaria', 'value')
 )
@@ -149,8 +192,7 @@ def update_hq_rating_graphic(value):
                          color_discrete_sequence=px.colors.sequential.Emrld)
         ano = ''
 
-    graphic.update_layout(
-        title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
+    graphic.update_layout(title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
     return graphic
 
 if __name__ == '__main__':
