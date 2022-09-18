@@ -123,10 +123,8 @@ def create_comparative_graphic_column_based(first_df, second_df, first_name, sec
 HAIR_COLUMN_TITLE = 'HAIR'
 EYE_COLUMN_TITLE = 'EYE'
 
-create_comparative_graphic_column_based(
-    dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', HAIR_COLUMN_TITLE)
-create_comparative_graphic_column_based(
-    dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', EYE_COLUMN_TITLE)
+create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', HAIR_COLUMN_TITLE)
+create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', EYE_COLUMN_TITLE)
 
 
 @app.callback(
@@ -154,7 +152,6 @@ def update_hq_rating_graphic(value):
     graphic.update_layout(
         title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
     return graphic
-
 
 if __name__ == '__main__':
     app.run_server(debug=True)
