@@ -40,13 +40,16 @@ app.layout = html.Main(children=[
             )
         ])
     ]),
-    html.Section(id="comics-rating", children=[
+    html.Section(id="comics-rating", className='column-container', children=[
         html.H1(children='Classificação Etária das HQs'),
-        html.H2(children='Gráficos com as classificações.'),
-        html.Div(children='Interação referente às classificações etárias.'),
-        dcc.Dropdown(['Todos os Anos', 'Anos 90', 'Anos 2000', 'Anos 2010'],
-                     'Todos os Anos', id='classificacao_etaria'),
-        dcc.Graph(id='grafico_interação')
+        html.Div(className='row-container',  children=[
+            html.Label(children='Escolha o período desejado:'),
+            dcc.Dropdown(['Todos os Anos', 'Anos 90', 'Anos 2000', 'Anos 2010'],
+                         'Todos os Anos', id='classificacao-etaria'),
+        ]),
+        dcc.Graph(
+            id='comics-rating-graph'
+        )
     ])
 ])
 
@@ -120,13 +123,15 @@ def create_comparative_graphic_column_based(first_df, second_df, first_name, sec
 HAIR_COLUMN_TITLE = 'HAIR'
 EYE_COLUMN_TITLE = 'EYE'
 
-create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', HAIR_COLUMN_TITLE)
-create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', EYE_COLUMN_TITLE)
+create_comparative_graphic_column_based(
+    dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', HAIR_COLUMN_TITLE)
+create_comparative_graphic_column_based(
+    dc_wikia_dataframe, mcu_wikia_dataframe, 'DC', 'MCU', EYE_COLUMN_TITLE)
 
 
 @app.callback(
-    Output('grafico_interação', 'figure'),
-    Input('classificacao_etaria', 'value')
+    Output('comics-rating-graph', 'figure'),
+    Input('classificacao-etaria', 'value')
 )
 def update_hq_rating_graphic(value):
     if value == "Anos 90":
@@ -146,7 +151,8 @@ def update_hq_rating_graphic(value):
                          color_discrete_sequence=px.colors.sequential.Emrld)
         ano = ''
 
-    graphic.update_layout(title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
+    graphic.update_layout(
+        title_text=f'Porcetagem das classificações indicativas dos quadrinhos da Marvel {ano}', template='plotly_dark')
     return graphic
 
 
