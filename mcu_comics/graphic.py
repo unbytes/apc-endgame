@@ -1,28 +1,94 @@
-# Chamar as bibliotecas (Pandas e Plotly)
 import pandas as pd
-import plotly.graph_objects as go
 
-# Caminho para os dados
-PATH_MARVEL_COMICS = 'assets\data\Marvel_Comics.csv'
+from utils.functions import get_column_without_nan, unique_value_list
 
-# Leitura dos dados
-comics_dataframe = pd.read_csv(PATH_MARVEL_COMICS)
+from datetime import datetime
 
-# Filtrar uma coluna especifica (Rating)
+PATH_MARVEL_COMICS_DATASET = 'https://raw.githubusercontent.com/MateusVrs/apc-endgame/PePa/04/assets/data/Marvel_Comics.csv'
+mcu_comics_dataframe = pd.read_csv(PATH_MARVEL_COMICS_DATASET)
+
+YEARS_COLUMN_TITLE = "publish_date"
 RATING_COLUMN_TITLE = 'Rating'
 
-# Listagem de cada faixa etária
-comics_rating = list()
-for rating in comics_dataframe[RATING_COLUMN_TITLE]: # Especificando um tipo de dado no data frame (Rating)
-    if rating not in comics_rating: # Condicional para verificar se ele está dentro da lista
-        comics_rating.append(rating) # Adiciona +1 dado 'Rating' na lista 
+publish_date = get_column_without_nan(mcu_comics_dataframe, YEARS_COLUMN_TITLE)
+rating_column = get_column_without_nan(mcu_comics_dataframe, RATING_COLUMN_TITLE)
+unique_rating = unique_value_list(rating_column)
 
-# Listagem da frequência de cada faixa etária
-rating_count = list()
-for rating in comics_rating: # Percorre a lista de faixa etária na lista criada anteriormente
-    rating_count.append(list(comics_dataframe[RATING_COLUMN_TITLE]).count(rating)) # Contando quantas vezes cada faixa etária aparece
+# Listas das décadas
 
-# Plotagem do gráfico
-graphic = go.Figure([go.Pie(labels=comics_rating, values=rating_count)])
-graphic.update_layout(title_text='Porcetagem das classificatórias dos quadrinhos da Marvel')
-graphic.show()
+ninety = list()
+ten = list()
+twenty = list()
+
+# Listas das contagens
+
+count90 = list()
+count10 = list()
+count20 = list()
+rating_counts = list()
+
+# Função para retirar as strings Nones de listas
+
+def filter_none(column):
+    not_none_values = list()
+    for value in column:
+        if value != 'None':
+            not_none_values.append(value)
+    return not_none_values
+
+
+# Extrai os anos de publicação do quadrinhos
+publish_years = list()
+
+for date in publish_date:
+    try:
+        time = datetime.strptime(date, "%B %d, %Y")
+        publish_years.append(time.year)
+    except:
+        publish_years.append(0)
+
+# Laço de repetição usado para colocar cada classificação indicativa em sua respectiva década
+
+for rating, year in zip(rating_column, publish_years):
+    if year >= 1990 and year <= 1999:
+        ninety.append(rating)
+    elif year >= 2000 and year <= 2009:
+        ten.append(rating)
+    elif year >= 2010 and year <= 2019:
+        twenty.append(rating)
+
+# Listas com as etiquetas de décadas que vão ser usadas no gráfico
+
+label90 = list()
+label10 = list()
+label20 = list()
+rating_labels = list()
+
+# 4 laços para criar e adcionar as contagens e as etiquetas RELEVANTES de cada quadrinho em suas épocas
+
+MINIMUM_COUNT = 10
+unique_rating_without_none = filter_none(unique_rating)
+
+for rating in unique_rating_without_none:
+    count = ninety.count(rating)
+    if count >= MINIMUM_COUNT:
+        count90.append(count)
+        label90.append(rating)
+
+for rating in unique_rating_without_none:
+    count = ten.count(rating)
+    if count >= MINIMUM_COUNT:
+        count10.append(count)
+        label10.append(rating)
+
+for rating in unique_rating_without_none:
+    count = twenty.count(rating)
+    if count >= MINIMUM_COUNT:
+        count20.append(count)
+        label20.append(rating)
+
+for rating in unique_rating_without_none:
+    count = rating_column.count(rating)
+    if count >= 500:
+        rating_labels.append(rating)
+        rating_counts.append(count)
