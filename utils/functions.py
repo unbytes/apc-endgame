@@ -66,3 +66,30 @@ def get_column_without_nan(dataframe, column_title):
     column = get_column(dataframe, column_title)                                # Pega a coluna do DataFrame
     filtered_column = list(filter(isnot_nan, column))                           # Filtra a coluna
     return filtered_column
+
+def get_rows_without_nan(dataframe):
+  """Deleta os valores nan de todas as linhas do DataFrame
+
+  Args:
+    dataFrame: DataFrame que será filtrado
+  
+  Return:
+    Matriz com as linhas do DataFrame sem os valores nan
+  """
+  dataframe_rows = get_rows(dataframe)
+  for row_index, row in enumerate(dataframe_rows):
+    filtered_row = list(filter(isnot_nan, row))
+    dataframe_rows[row_index] = filtered_row
+  return dataframe_rows
+
+def get_rows(dataframe):
+  """Extrai todas as linhas do DataFrame
+
+  Args:
+    dataframe: DataFrame que será utilizado
+
+  Return:
+    Matriz com as linhas do DataFrame, lista que contém listas
+  """
+  matrix = dataframe.values.tolist()                                            # Transforma o DataFrame em uma matriz, ou seja, uma lista de listas
+  return matrix
