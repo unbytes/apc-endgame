@@ -1,38 +1,6 @@
 import pandas as pd
-import plotly.express as px
 
-
-from dash import Dash, dcc, html, Input, Output
-def get_rows(dataframe):
-  """Extrai todas as linhas do DataFrame
-
-  Args:
-    dataframe: DataFrame que será utilizado
-
-  Return:
-    Matriz com as linhas do DataFrame, lista que contém listas
-  """
-  matrix = dataframe.values.tolist()                                            # Transforma o DataFrame em uma matriz, ou seja, uma lista de listas
-  return matrix
-def get_column(dataframe, column_title):
-  """Extrai somente uma coluna do DataFrame
-
-  Args:
-    dataframe: DataFrame que será retirada a coluna
-    column_title: Título da coluna que será retirada
-
-  Return:
-    Coluna que foi retirada do DataFrame
-  """
-  matrix = get_rows(dataframe)
-  title_position = list(dataframe).index(column_title)                          # Identifica a posição (index) do Título da coluna nas listas
-  column_list = list()                            
-  for values in matrix:                                                         
-    value = values[title_position]                                              # Pega o valor da lista na posição da coluna
-    column_list.append(value)                                                   # Adiciona o valor na lista column_list
-  return column_list
-
-app = Dash(__name__)
+from utils.functions import get_column
 
 PATH_MCU_BOX_OFFICE = '/home/bibia/apc-endgame/assets/data/mcu_box_office.csv'
 
@@ -45,6 +13,7 @@ captain_duration = 0
 avengers_duration = 0
 guardian_duration = 0
 ant_duration = 0
+
 phase_1= 0
 phase_2= 0
 phase_3= 0
@@ -53,7 +22,6 @@ phase_4= 0
 only_movie_names = list()
 only_movie_duration = list()
 only_movie_phases = list()
-
 
 movie_duration_column = get_column(mcu_movie_info_dataframe, 'movie_duration') 
 movie_title_column = get_column(mcu_movie_info_dataframe, 'movie_title')
@@ -99,42 +67,6 @@ movies_duration = [spider_duration, iron_duration,
                   thor_duration, captain_duration,
                   avengers_duration, guardian_duration,
                   ant_duration, *only_movie_duration]
+
 phases_order = ["Fase 1", "Fase 2", "Fase 3", "Fase 4"]
 movie_phases = [phase_1, phase_2, phase_3, phase_4] 
-#Gráficos
-mcu_movies = px.pie(names=movie_title_column, values=movie_duration_column, color_discrete_sequence=px.colors.sequential.Emrld)
-mcu_movies.update_layout(title_text='Representatividade dos filmes (min)', template='plotly_dark')
-mcu_movies_duration_graphic = px.pie(names=movies_name, values=movies_duration, color_discrete_sequence=px.colors.sequential.Emrld)
-mcu_movies_duration_graphic.update_layout(title_text='Representatividade de cada franquia (min)', template='plotly_dark')
-mcu_phase_duration_graphic = px.pie(names=phases_order, values= movie_phases, color_discrete_sequence=px.colors.sequential.Emrld)
-mcu_phase_duration_graphic.update_layout(title_text='Representatividade de cada fase (min)', template='plotly_dark')
-
-#Fazendo aparecer o gráfico
-app.layout = html.Div(children=[
-    html.H1(children='Duração dos filmes da Marvel'),
-
-    dcc.Dropdown(['Filmes','Por fases', 'Por Franquia'], value = 'valor', id='lista de interacao'),
-
-    dcc.Graph(
-        id = "grafico",
-        figure = mcu_movies
-    )
-])
-#decorator
-@app.callback(
-    Output('grafico', 'figure'),
-    Input('lista de interacao', 'value')
-)
-#qual gráfico irá aparecer
-def updete_output(value):
-    if value == 'Por fases':
-        fig = mcu_phase_duration_graphic 
-    elif value == 'Por Franquia':
-        fig = mcu_movies_duration_graphic
-    elif value == 'Filmes':
-        fig = mcu_movies
-
-    return fig
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
