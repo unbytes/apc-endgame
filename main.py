@@ -44,14 +44,14 @@ app.layout = html.Main(children=[
         ])
     ]), 
     html.Section(className='column-container', children=[
-        html.H1(children ='Fases do UCM'),
-        html.H2(children = 'Gráficos com os custos de cada filme, em sua respectiva fase.'),
+        html.H1(children ='Fases do MCU'),
+        html.H2(children = 'Gráficos com os custos da Marvel por fase.'),
         html.Div(className='row-container', children=[
             html.Label(children='Escolha a fase da Marvel:'),
-            dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'], 'Todas as Fases', id='fases_ucm'),
+            dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'], 'Todas as Fases', id='fases-ucm'),
         ]),
         dcc.Graph(
-            id ='grafico_interação'
+            id ='movies-budget-graph'
         )
     ]),
     html.Section(id="comics-rating", className='column-container', children=[
@@ -142,32 +142,23 @@ create_comparative_graphic_column_based(dc_wikia_dataframe, mcu_wikia_dataframe,
 
 
 @app.callback(
-    Output('grafico_interação', 'figure'),
-    Input('fases_ucm', 'value')
+    Output('movies-budget-graph', 'figure'),
+    Input('fases-ucm', 'value')
 )
 def graphic_movies(value):
     if value == "Todas as Fases":
         fig = px.bar(x=["Fase 1", "Fase 2", "Fase 3", "Fase 4"], y=[count_phase_one, count_phase_two, 
-        count_phase_three, count_phase_four],
-        title=('Custos do UCM por Fases'), labels={'x': 'Fases do UCM', 'y': 'Custo em Bilhão'})
-        fig.update_traces(marker_color='#a408c7')
-        fig.update_layout(template='plotly_dark')
+        count_phase_three, count_phase_four], labels={'x': 'Fases do UCM', 'y': 'Custo em Bilhão'})
     elif value == "Fase 1":
          fig = px.bar(x = phase_one_movies, y = phase_one, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
-         fig.update_traces(marker_color='#a408c7')
-         fig.update_layout(template='plotly_dark')
     elif value == "Fase 2":
          fig = px.bar(x = phase_two_movies, y = phase_two, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
-         fig.update_traces(marker_color='#a408c7')
-         fig.update_layout(template='plotly_dark')
     elif value == "Fase 3":
          fig = px.bar(x = phase_three_movies, y = phase_three, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
-         fig.update_traces(marker_color='#a408c7')
-         fig.update_layout(template='plotly_dark')
     elif value == "Fase 4":
          fig = px.bar(x = phase_four_movies, y = phase_four, labels={'x': 'Filmes', 'y': 'Custo em Milhão'})
-         fig.update_traces(marker_color='#a408c7')
-         fig.update_layout(template='plotly_dark')
+    fig.update_traces(marker_color='#a408c7')
+    fig.update_layout(template='plotly_dark')
     return fig
 
 
