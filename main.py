@@ -1,7 +1,7 @@
 from dc_mcu.graphic import dc_wikia_dataframe, mcu_wikia_dataframe
-from rating_tomato_mcu.graphic import count_phase_one, count_phase_two, count_phase_three, count_phase_four
-from rating_tomato_mcu.graphic import phase_one_movies, phase_two_movies, phase_three_movies, phase_four_movies
-from rating_tomato_mcu.graphic import phase_one, phase_two, phase_three, phase_four
+from phases_budget.graphic import count_phase_one, count_phase_two, count_phase_three, count_phase_four
+from phases_budget.graphic import phase_one_movies, phase_two_movies, phase_three_movies, phase_four_movies
+from phases_budget.graphic import phase_one, phase_two, phase_three, phase_four
 
 from utils.functions import get_column, unique_value_list
 
@@ -42,13 +42,13 @@ app.layout = html.Main(children=[
             )
         ])
     ]), 
-    html.Div(children=[
+    html.Section(className='column-container', children=[
         html.H1(children ='Fases do UCM'),
         html.H2(children = 'Gráficos com os custos de cada filme, em sua respectiva fase.'),
-        html.Div(children='''
-            Interação referente as fases do UCM e seus respectivos filmes.
-        '''),
-        dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'], 'Todas as Fases', id='fases_ucm'),
+        html.Div(className='row-container', children=[
+            html.Label(children='Escolha a fase da Marvel:'),
+            dcc.Dropdown(['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4', 'Todas as Fases'], 'Todas as Fases', id='fases_ucm'),
+        ]),
         dcc.Graph(
             id ='grafico_interação',
         )

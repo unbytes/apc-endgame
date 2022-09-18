@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+
 :root {
     --background-black: #111111;
     --background-white: #f6f6f6;
 
-    --font-color: #ffffff;
+    --font-white-color: #ffffff;
+    --font-black-color: #121212;
 }
 
 * {
@@ -14,7 +17,7 @@ html,
 body {
     background-color: var(--background-black);
 
-    color: var(--font-color);
+    color: var(--font-white-color);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
@@ -59,4 +62,10 @@ label {
 
 .year-slider {
     width: 50%;
+}
+
+.dash-dropdown {
+    width: 50%;
+
+    color: var(--font-black-color)
 }
