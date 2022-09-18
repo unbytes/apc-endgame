@@ -20,6 +20,7 @@ import sys
 sys.path.append('./')
 
 app = Dash(__name__)
+server = app.server
 
 app.layout = html.Main(children=[
     html.Section(className='column-container', children=[

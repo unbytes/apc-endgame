@@ -10,3 +10,6 @@ __pycache__
 
 # Visual Studio Code Configuration
 /.vscode
+
+# Dash
+.DS_Store
